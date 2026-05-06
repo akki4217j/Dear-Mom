@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
 import Navbar from './components/Navbar';
 import BottomNav from './components/BottomNav';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -37,34 +38,37 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Layout>
-          <Routes>
-            {/* Public */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+        <SocketProvider>
+          <Layout>
+            <Routes>
+              {/* Public */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Mom Routes */}
-            <Route path="/mom/dashboard" element={<ProtectedRoute allowedRole="mom"><MomDashboard /></ProtectedRoute>} />
-            <Route path="/mom/mood" element={<ProtectedRoute allowedRole="mom"><MoodTracker /></ProtectedRoute>} />
-            <Route path="/mom/tasks" element={<ProtectedRoute allowedRole="mom"><DailyTasks /></ProtectedRoute>} />
-            <Route path="/mom/relax" element={<ProtectedRoute allowedRole="mom"><RelaxPage /></ProtectedRoute>} />
-            <Route path="/mom/report" element={<ProtectedRoute allowedRole="mom"><ReportPage /></ProtectedRoute>} />
-            <Route path="/mom/doctor" element={<ProtectedRoute allowedRole="mom"><DoctorLocator /></ProtectedRoute>} />
-            <Route path="/mom/askme" element={<ProtectedRoute allowedRole="mom"><AskMe /></ProtectedRoute>} />
-            <Route path="/mom/games" element={<ProtectedRoute allowedRole="mom"><CoupleGames /></ProtectedRoute>} />
-            <Route path="/mom/memory" element={<ProtectedRoute allowedRole="mom"><MemoryBook /></ProtectedRoute>} />
+              {/* Mom Routes */}
+              <Route path="/mom/dashboard" element={<ProtectedRoute allowedRole="mom"><MomDashboard /></ProtectedRoute>} />
+              <Route path="/mom/mood" element={<ProtectedRoute allowedRole="mom"><MoodTracker /></ProtectedRoute>} />
+              <Route path="/mom/tasks" element={<ProtectedRoute allowedRole="mom"><DailyTasks /></ProtectedRoute>} />
+              <Route path="/mom/relax" element={<ProtectedRoute allowedRole="mom"><RelaxPage /></ProtectedRoute>} />
+              <Route path="/mom/report" element={<ProtectedRoute allowedRole="mom"><ReportPage /></ProtectedRoute>} />
+              <Route path="/mom/doctor" element={<ProtectedRoute allowedRole="mom"><DoctorLocator /></ProtectedRoute>} />
+              <Route path="/mom/askme" element={<ProtectedRoute allowedRole="mom"><AskMe /></ProtectedRoute>} />
+              <Route path="/mom/games" element={<ProtectedRoute allowedRole="mom"><CoupleGames /></ProtectedRoute>} />
+              <Route path="/mom/memory" element={<ProtectedRoute allowedRole="mom"><MemoryBook /></ProtectedRoute>} />
 
-            {/* Partner Routes */}
-            <Route path="/partner/dashboard" element={<ProtectedRoute allowedRole="partner"><PartnerDashboard /></ProtectedRoute>} />
-            <Route path="/partner/games" element={<ProtectedRoute allowedRole="partner"><CoupleGames /></ProtectedRoute>} />
-            <Route path="/partner/memory" element={<ProtectedRoute allowedRole="partner"><MemoryBook /></ProtectedRoute>} />
-          </Routes>
-        </Layout>
+              {/* Partner Routes */}
+              <Route path="/partner/dashboard" element={<ProtectedRoute allowedRole="partner"><PartnerDashboard /></ProtectedRoute>} />
+              <Route path="/partner/games" element={<ProtectedRoute allowedRole="partner"><CoupleGames /></ProtectedRoute>} />
+              <Route path="/partner/memory" element={<ProtectedRoute allowedRole="partner"><MemoryBook /></ProtectedRoute>} />
+            </Routes>
+          </Layout>
+        </SocketProvider>
       </AuthProvider>
     </BrowserRouter>
   );
 }
 
 export default App;
+

@@ -1,10 +1,14 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import babyNames from '../data/babyNames';
 import { Heart, X, RotateCcw, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useSocket } from '../context/SocketContext';
 import { gameAPI } from '../api/api';
+import PuzzleGame from './PuzzleGame';
 
 const gameTabs = [
+  { id: 'puzzle', label: 'Puzzle 🧩' },
   { id: 'names', label: 'Baby Names 👶' },
   { id: 'trivia', label: 'Trivia 🧠' },
   { id: 'couple', label: 'Couple Quiz 💕' },
@@ -25,7 +29,35 @@ const coupleQuestions = ["What name style do you prefer?","Nursery theme?","Pare
 const coupleOptions = [["Traditional","Modern","Unique"],["Nature 🌿","Stars ⭐","Animals 🐻","Minimal"],["Strict","Balanced","Free-spirited"],["Mountains","Beach","City","Home"],["Music","Sports","Arts","Reading"]];
 
 const CoupleGames = () => {
-  const [activeTab, setActiveTab] = useState('names');
+  const [activeTab, setActiveTab] = useState('puzzle');
+  const { consumePendingSession, pendingSessionId } = useSocket();
+  const [autoJoinSessionId, setAutoJoinSessionId] = useState(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Handle URL join links (e.g. ?join=12345)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const joinId = searchParams.get('join');
+    if (joinId) {
+      setActiveTab('puzzle');
+      setAutoJoinSessionId(joinId);
+      // Clean up URL after grabbing the session ID
+      navigate(location.pathname, { replace: true });
+    }
+  }, [location, navigate]);
+
+  // When navigated here from a game-invite notification, auto-switch to puzzle tab and join
+  useEffect(() => {
+    if (pendingSessionId) {
+      const sessionId = consumePendingSession();
+      if (sessionId) {
+        setActiveTab('puzzle');
+        setAutoJoinSessionId(sessionId);
+      }
+    }
+  }, [pendingSessionId, consumePendingSession]);
+
   return (
     <div className="pb-bottom-nav">
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-5">
@@ -41,6 +73,12 @@ const CoupleGames = () => {
             </button>
           ))}
         </div>
+        {activeTab === 'puzzle' && (
+          <PuzzleGame
+            autoJoinSessionId={autoJoinSessionId}
+            onAutoJoinConsumed={() => setAutoJoinSessionId(null)}
+          />
+        )}
         {activeTab === 'names' && <BabyNamePicker />}
         {activeTab === 'trivia' && <TriviaGame />}
         {activeTab === 'couple' && <CoupleQuiz />}

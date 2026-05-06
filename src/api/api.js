@@ -77,4 +77,14 @@ export const gameAPI = {
   resetQuizAnswers: () => API.delete('/games/quiz-answers'),
 };
 
+// ──────── PUZZLES ────────
+export const puzzleAPI = {
+  getAll: (params) => API.get('/puzzles', { params }),
+  getRandom: (difficulty) => API.get('/puzzles/random', { params: { difficulty } }),
+  startGame: (puzzleId) => API.post('/puzzles/start-game', { puzzleId }),
+  getSession: (id) => API.get(`/puzzles/session/${id}`),
+  getSessions: () => API.get('/puzzles/sessions'),
+  placeMove: (id, data) => API.post(`/puzzles/session/${id}/move`, data),
+};
+
 export default API;
